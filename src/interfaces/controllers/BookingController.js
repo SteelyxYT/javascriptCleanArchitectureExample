@@ -1,10 +1,10 @@
 function BookingController( CreateBookingUseCase, GetAllBookingsUseCase, GetBookingByIdUseCase, GetBookingsByUserIdUseCase, GetBookingsByHotelIdUseCase, GetBookingsByDateRangeUseCase, UpdateBookingUseCase, DeleteBookingUseCase) {
     return {
         async createBooking(req, res) {
-            const { hotelId, userId, startDate, endDate } = req.body;
+            const { hotelId, userId, people, startDate, endDate } = req.body;
 
             try {
-                const booking = await CreateBookingUseCase.execute(hotelId, userId, startDate, endDate);
+                const booking = await CreateBookingUseCase.execute(hotelId, userId, people, startDate, endDate);
                 res.status(201).json(booking);
             } catch (error) {
                 res.status(400).json({ error: error.message });

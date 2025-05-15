@@ -8,7 +8,7 @@ class User {
     #role
     #createdAt
 
-    constructor(username, password, email, role) {
+    constructor(username, password, email, role, id = null) {
         this.#username = username;
         this.#password = password;
 
@@ -21,8 +21,11 @@ class User {
         this.#role = role; //default role is user
 
         //Generate random id
-        this.#id = Math.random().toString(36).substring(2, 9);
-
+        if (id) {
+            this.#id = id;
+        } else {
+            this.#id = Math.random().toString(36).substring(2, 9);
+        }
 
         this.#createdAt = new Date();
     }

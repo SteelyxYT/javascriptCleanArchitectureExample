@@ -1,6 +1,6 @@
 const IBookingRepository = require("../../application/repository_interfaces/IBookingRepository");
 const Booking = require("../../domain/entities/Booking");
-const pool = require("./HotelDb");
+const pool = require("./db");
 
 class InSQLBookingRepository extends IBookingRepository {
     constructor() {
@@ -11,14 +11,28 @@ class InSQLBookingRepository extends IBookingRepository {
     async create(booking) {
         const connection = await pool.getConnection();
         try {
-            const [insertRequest] = await connection.query('INSERT INTO booking (HotelID, UserID, StartDate, EndDate) VALUES (?, ?, ?, ?)', [booking.hotelId, booking.userId, booking.startDate, booking.endDate]);
+
+            const [Rooms] = await connection.query('SELECT * FROM room WHERE HotelID = ?', [booking.hotelId]);
+
+            console.log("Rooms:", Rooms);
+
+            if (Rooms.length === 0) {
+                throw new Error("No rooms available for this hotel.");
+            }
+            const room = Rooms[0];
+            const roomId = room.RoomID;
+
+            console.log("Booking:", booking.bookingDetails);
+
+            const [insertRequest] = await connection.query('INSERT INTO booking (RoomID, UserID, StartDate, EndDate, People) VALUES (?, ?, ?, ?, ?)', [roomId, booking.userId, booking.checkInDate, booking.checkOutDate, booking.bookingAmount]);
 
             const bookingId = insertRequest.insertId;
             const [rows] = await connection.query('SELECT * FROM booking WHERE BookingID = ?', [bookingId]);
 
-            const newBooking = new Booking(rows[0].HotelID, rows[0].UserID, rows[0].StartDate, rows[0].EndDate, rows[0].BookingID);
+            const newBooking = new Booking(rows[0].roomID, rows[0].UserID, rows[0].StartDate, rows[0].EndDate, rows[0].People, rows[0].BookingID);
+            console.log("New Booking:", newBooking.bookingDetails);
 
-            return newBooking.info;
+            return newBooking.bookingDetails;
         } catch (error) {
             console.error("Error creating booking:", error);
             throw error;

@@ -3,13 +3,15 @@ class Booking {
     #id;
     #userId;
     #hotelId;
+    #amount;
     #checkInDate;
     #checkOutDate;
 
-  constructor(id, userId, hotelId, checkInDate, checkOutDate) {
+  constructor(userId, hotelId, checkInDate, checkOutDate, amount, id = null) {
     this.id = id;
     this.userId = userId;
     this.hotelId = hotelId;
+    this.amount = amount; // Default value
     this.checkInDate = checkInDate;
     this.checkOutDate = checkOutDate;
   }
@@ -19,6 +21,7 @@ class Booking {
       id: this.id,
       userId: this.userId,
       hotelId: this.hotelId,
+      amount: this.amount,
       checkInDate: this.checkInDate,
       checkOutDate: this.checkOutDate,
     };
@@ -37,6 +40,9 @@ class Booking {
     }
     get bookingCheckOutDate() {
         return this.checkOutDate;
+    }
+    get bookingAmount() {
+        return this.amount;
     }
 }
 

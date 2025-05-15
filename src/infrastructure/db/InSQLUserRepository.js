@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const User = require("../../domain/entities/User");
 
 const IUserRepository = require("../../application/repository_interfaces/IUserRepository");
-const pool = require("./UserDb");
+const pool = require("./db");
 
 class InMemoryUserRepository extends IUserRepository {
     constructor() {
@@ -22,12 +22,23 @@ class InMemoryUserRepository extends IUserRepository {
         try {
         const connection = await pool.getConnection();
 
-        await connection.query(
-            "INSERT INTO user (UserID, username, password, email, role) VALUES (?, ?, ?, ?, ?)",
-            [userObj.id, userObj.username, userObj.password, userObj.email, userObj.role]
+        const [result] = await connection.query(
+            "INSERT INTO user (username, password, email, role) VALUES (?, ?, ?, ?)",
+            [userObj.username, userObj.password, userObj.email, userObj.role]
         );
 
+        const userId = result.insertId;
+        const [rows] = await connection.query(
+            "SELECT * FROM user WHERE UserID = ?",
+            [userId]
+        );
+
+        const newUser = new User(rows[0].username, rows[0].password, rows[0].email, rows[0].role, rows[0].UserID);
+        console.log("User saved:", newUser.profile);
+
         await connection.release();
+
+        return newUser.profile;
 
         } catch (error) {
             console.error("Error connecting to the database:", error);

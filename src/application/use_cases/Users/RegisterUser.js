@@ -14,10 +14,10 @@ class RegisterUser {
 
         //Create user and save the user
         const user = new User(username, password, email, 1);
-        await this.userRepository.save(user);
-        
+        const savedUser = await this.userRepository.save(user);
+        if (!savedUser) throw new Error("User could not be saved.");
 
-        return user.profile;
+        return savedUser;
 
     }
 }
