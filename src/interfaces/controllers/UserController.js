@@ -1,4 +1,4 @@
-function UserController(registerUserUseCase, getUserProfileUseCase) {
+function UserController(registerUserUseCase, getUserProfileUseCase, loginUserUseCase) {
     return {
         async register(req, res) {
             const { username, password, email } = req.body;
@@ -15,6 +15,17 @@ function UserController(registerUserUseCase, getUserProfileUseCase) {
             try {
                 const profile = await getUserProfileUseCase.execute(req.params.username);
                 res.status(200).json(profile);
+            } catch (error) {
+                res.status(400).json({ error: error.message });
+            }
+        },
+
+        async login(req, res) {
+            const { username, password } = req.body;
+
+            try {
+                const token = await loginUserUseCase.execute(username, password);
+                res.status(200).json({ token });
             } catch (error) {
                 res.status(400).json({ error: error.message });
             }

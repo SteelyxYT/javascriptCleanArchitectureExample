@@ -5,9 +5,10 @@ class User {
     #password
     #username
     #email
+    #role
     #createdAt
 
-    constructor(username, password, email) {
+    constructor(username, password, email, role) {
         this.#username = username;
         this.#password = password;
 
@@ -16,6 +17,8 @@ class User {
             throw new Error("Invalid email/does not contain @");
         }
         this.#email = email;
+
+        this.#role = role; //default role is user
 
         //Generate random id
         this.#id = Math.random().toString(36).substring(2, 9);
@@ -30,6 +33,7 @@ class User {
             username: this.#username,
             password: this.#password,
             email: this.#email,
+            role: this.#role,
             createdAt: this.#createdAt
         }
     }
@@ -48,6 +52,10 @@ class User {
 
     get email() {
         return this.#email;
+    }
+
+    get role() {
+        return this.#role;
     }
 
     get createdAt() {

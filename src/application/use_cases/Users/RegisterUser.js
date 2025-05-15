@@ -1,4 +1,4 @@
-const User = require("../../domain/entities/User");
+const User = require("../../../domain/entities/User");
 
 class RegisterUser {
     constructor(userRepository) {
@@ -13,7 +13,7 @@ class RegisterUser {
 
 
         //Create user and save the user
-        const user = new User(username, password, email);
+        const user = new User(username, password, email, 1);
         await this.userRepository.save(user);
         
 

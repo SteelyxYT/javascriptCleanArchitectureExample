@@ -11,6 +11,7 @@ class GetUserProfile {
             username: user.username,
             password: user.password,
             email: user.email,
+            role: user.role,
             createdAt: user.createdAt
         }
     }
